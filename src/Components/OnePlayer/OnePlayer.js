@@ -1,6 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Card, Button, Form} from 'react-bootstrap';
+import { Card, Button} from 'react-bootstrap';
 import './OnePlayer.css';
 
 class LListNode {
@@ -8,7 +8,7 @@ class LListNode {
     this.value = value;
     this.next = next;
   }
-    // getters and setters….
+    
 }
 
 class LList {
@@ -22,16 +22,15 @@ class LList {
       current = newNode;
     }
 }
-  // Cost: O(1)
+  
   begin() {
     return LListIterator[Symbol.iterator](this.header.getNext(), this);
   }
-  // Cost: O(n)
+  
   clone(node) {
     if (node === null) return null;
     else return new LListNode(node.getValue(), this.clone(node.getNext()));
   }
-  // Cost: O(1) 
   insert(pos, val) {
     const newNode = new LListNode(val, pos.current().getNext());
     pos.current().setNext(newNode);
@@ -61,6 +60,7 @@ const LListIterator = {
     }
   };
 
+  
   class HashTable {
     constructor(size) {
       this.elements = 0;
@@ -92,12 +92,9 @@ class OnePlayer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {hTable: new HashTable(10)};
-        this.state = {puntaje: 100};
-        this.state = {guess:''};
-        this.state = {guessF:''};
-        this.state = {Hash:[]};
         this.state = {alphabet: "QWERTYUIOPASDFGHJKLZXCVBNM"};
-        this.state = {board: [ 
+
+        this.state = {MaxHeap: [], Hash: [],resultado: 0,puntaje: 0, board: [ 
             [this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)]],
             [this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)]],
             [this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)]],
@@ -110,7 +107,8 @@ class OnePlayer extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({guessF: event.target.value});
+      const value = event.target.value.toUpperCase();
+      this.setState({guessF: value});
 
     }
 
@@ -120,131 +118,131 @@ class OnePlayer extends React.Component {
 
     
   handleSubmit() {
-      this.setState({guess: this.state.guessF});
+      
+      let existe = this.checkWord(this.state.board, this.state.guessF, this.state.Hash);
+      this.setState({resultado : existe});
   }
+
+  
+
+  checkWord (board = [], guess = '',Hash = []) {
+    
+    const numRows = board.length;
+    const numCols = board[0].length;
+  
+  
+    let queue = board.reduce((acc, row, i) => {
+      row.forEach((x, j) => {
+        if (x === guess[0]) {
+          acc.push ( { pos: {r: i, c: j} , nextIndex: 1, path: [numCols*i + j ] } );
+        }
+      });
+      return acc;
+    }, []);
+  
+  
+    let exploreWord = (obj, queue) => {
+  
+      let allMoves = [ {r: obj.pos.r - 1, c: obj.pos.c },
+        {r: obj.pos.r + 1, c: obj.pos.c },
+        {r: obj.pos.r, c: obj.pos.c - 1 },
+        {r: obj.pos.r, c: obj.pos.c + 1 },
+        {r: obj.pos.r - 1, c: obj.pos.c - 1 },
+        {r: obj.pos.r - 1, c: obj.pos.c + 1 },
+        {r: obj.pos.r + 1, c: obj.pos.c - 1 },
+        {r: obj.pos.r + 1, c: obj.pos.c + 1 }
+       ];
+  
+      allMoves.forEach((o) => {
+        let index = numCols * o.r + o.c;
+        if (o.r >= 0 && o.r < numRows && o.c >= 0 && o.c < numCols) {
+          if (board[o.r][o.c] === guess[obj.nextIndex] && !obj.path.includes(index)) {
+              let cloneObj = JSON.parse(JSON.stringify(obj));
+              cloneObj.pos = { r: o.r, c: o.c };
+              cloneObj.nextIndex += 1;
+              cloneObj.path.push(index);
+              queue.push(cloneObj);
+          }
+        }
+      });
+    };
+  
+    while (queue.length > 0) {
+      let obj = queue.shift();
+      console.log(guess);
+      if (obj.nextIndex === guess.length) {
+        
+        
+        for (var i = 0; i < Hash.length; i++) {
+          if (Hash[i] === guess) {
+            return false;
+          }
+        }
+        Hash.push(guess);
+        console.log(Hash);
+        this.setState({puntaje: this.state.puntaje+100});
+        return true;
+      }
+      exploreWord(obj, queue);
+    }
+    return false;
+
+}
+
+handleSubmit1() {
+  this.state.MaxHeap.push(this.state.puntaje);
+  this.state.MaxHeap.push(300);
+  this.state.MaxHeap.push(500);
+  this.state.MaxHeap.push(700);
+  this.state.MaxHeap.sort(function(a, b){return b - a});
+  alert('El resultado numero 1: ' + this.state.MaxHeap[0] + '\nEl resultado numero 2: '+ this.state.MaxHeap[1] + '\nEl resultado numero 3: '+ this.state.MaxHeap[2]+ '\n\nTu resultado fue: '+ this.state.puntaje);
+
+
+}
+
+
 
 render() {
     
-    
-
-  this.state.puntaje = 0;
-    const checkWord = (board = [], guess = '',Hash = []) => {
-    
-        const numRows = board.length;
-        const numCols = board[0].length;
-      
-      
-        let queue = board.reduce((acc, row, i) => {
-          row.forEach((x, j) => {
-            if (x === guess[0]) {
-              acc.push ( { pos: {r: i, c: j} , nextIndex: 1, path: [numCols*i + j ] } );
-            }
-          });
-          return acc;
-        }, []);
-      
-      
-        let exploreWord = (obj, queue) => {
-      
-          let allMoves = [ {r: obj.pos.r - 1, c: obj.pos.c },
-            {r: obj.pos.r + 1, c: obj.pos.c },
-            {r: obj.pos.r, c: obj.pos.c - 1 },
-            {r: obj.pos.r, c: obj.pos.c + 1 },
-            {r: obj.pos.r - 1, c: obj.pos.c - 1 },
-            {r: obj.pos.r - 1, c: obj.pos.c + 1 },
-            {r: obj.pos.r + 1, c: obj.pos.c - 1 },
-            {r: obj.pos.r + 1, c: obj.pos.c + 1 }
-           ];
-      
-          allMoves.forEach((o) => {
-            let index = numCols * o.r + o.c;
-            if (o.r >= 0 && o.r < numRows && o.c >= 0 && o.c < numCols) {
-              if (board[o.r][o.c] === guess[obj.nextIndex] && !obj.path.includes(index)) {
-                  let cloneObj = JSON.parse(JSON.stringify(obj));
-                  cloneObj.pos = { r: o.r, c: o.c };
-                  cloneObj.nextIndex += 1;
-                  cloneObj.path.push(index);
-                  queue.push(cloneObj);
-              }
-            }
-          });
-        };
-      
-        while (queue.length > 0) {
-          let obj = queue.shift();
-          if (obj.nextIndex === guess.length) {
-            //this.state.puntaje = this.state.puntaje + 100;
-
-            for (var i = 0; i < Hash.length; i++) {
-              if (Hash[i] === guess) {
-                return false;
-                
-              }
-            }
-            
-            return true;
-          }
-          exploreWord(obj, queue);
-        }
-        return false;
-
-        /*
-        this.state.hTable.insert({
-          id: 1,
-          value: "Cat" 
-        });
-        this.state.hTable.insert({
-          id: 56,
-          value: "Dog" 
-        });
-        */
-
-    }
-    var resultado = checkWord(this.state.board, this.state.guess, this.state.Hash);
-    if(resultado == true){
-      this.setState({puntaje: this.state.puntaje+100});
-    }
-
     return (
 
         <div class="Information">
         <Card className="text-center">
-  <Card.Header>Featured</Card.Header>
+  <Card.Header>GAME</Card.Header>
   <Card.Body>
   <div>
           <div className="board-row">
-          <Button variant="primary">{this.state.board[0][0]}</Button>
-          <Button variant="primary">{this.state.board[0][1]}</Button>
-          <Button variant="primary">{this.state.board[0][2]}</Button>
-          <Button variant="primary">{this.state.board[0][3]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[0][0]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[0][1]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[0][2]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[0][3]}</Button>
           </div>
           <div className="board-row">
-          <Button variant="primary">{this.state.board[1][0]}</Button>
-          <Button variant="primary">{this.state.board[1][1]}</Button>
-          <Button variant="primary">{this.state.board[1][2]}</Button>
-          <Button variant="primary">{this.state.board[1][3]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[1][0]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[1][1]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[1][2]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[1][3]}</Button>
           </div>
           <div className="board-row">
-          <Button variant="primary">{this.state.board[2][0]}</Button>
-          <Button variant="primary">{this.state.board[2][1]}</Button>
-          <Button variant="primary">{this.state.board[2][2]}</Button>
-          <Button variant="primary">{this.state.board[2][3]}</Button>    
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[2][0]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[2][1]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[2][2]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[2][3]}</Button>    
           </div>
           <div className="board-row">
-          <Button variant="primary">{this.state.board[3][0]}</Button>
-          <Button variant="primary">{this.state.board[3][1]}</Button>
-          <Button variant="primary">{this.state.board[3][2]}</Button>
-          <Button variant="primary">{this.state.board[3][3]}</Button>    
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[3][0]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[3][1]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[3][2]}</Button>
+          <Button variant="dark "style={{width: '50px'}}>{this.state.board[3][3]}</Button>    
             
           </div>
 
           <div>
-        
+        <br/>
         <label>
-          Palabra:
           <input type="text" value={this.state.guessF} onChange={this.handleChange} />
         </label>
-        <button onClick={this.handleSubmit}>Subir</button>
+        <Button variant="success" onClick={this.handleSubmit}>Subir</Button>
         
           </div>
           
@@ -252,10 +250,9 @@ render() {
   </Card.Body>
   <Card.Footer className="text-muted">El puntaje es de: {this.state.puntaje}</Card.Footer>
 </Card>
+<br/>
 
-<h1>{resultado.toString()}</h1>
-
-<Button variant="primary">Volver al menu</Button>
+<Button variant="warning"onClick={this.handleSubmit1.bind(this)} href="/Home">Terminar</Button>
 </div>
 
 

@@ -94,7 +94,7 @@ class OnePlayer extends React.Component {
         this.state = {hTable: new HashTable(10)};
         this.state = {alphabet: "QWERTYUIOPASDFGHJKLZXCVBNM"};
 
-        this.state = {MaxHeap: [], Hash: [],resultado: 0,puntaje: 0, board: [ 
+        this.state = {MaxHeap: [], Hash: [],Find:'',resultado: 0,puntaje: 0, board: [ 
             [this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)]],
             [this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)]],
             [this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)],this.state.alphabet[Math.floor(Math.random() * this.state.alphabet.length)]],
@@ -175,16 +175,20 @@ class OnePlayer extends React.Component {
         
         for (var i = 0; i < Hash.length; i++) {
           if (Hash[i] === guess) {
+            this.setState({Find: 'Ya fue insertado'});
             return false;
           }
         }
         Hash.push(guess);
         console.log(Hash);
-        this.setState({puntaje: this.state.puntaje+100});
+        var sum = (guess.length-1)*100;
+        this.setState({puntaje: this.state.puntaje+sum});
+        this.setState({Find: 'Sumaste un total de '+sum});
         return true;
       }
       exploreWord(obj, queue);
     }
+    this.setState({Find: ''});
     return false;
 
 }
@@ -242,10 +246,11 @@ render() {
         <label>
           <input type="text" value={this.state.guessF} onChange={this.handleChange} />
         </label>
+        
         <Button variant="success" onClick={this.handleSubmit}>Subir</Button>
         
           </div>
-          
+          <div>{this.state.Find}</div>
         </div>
   </Card.Body>
   <Card.Footer className="text-muted">El puntaje es de: {this.state.puntaje}</Card.Footer>

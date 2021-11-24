@@ -9,7 +9,7 @@ function Home() {
 
 <div class="Information">
   
-<Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
+<Tabs defaultActiveKey="home" id="uncontrolled-tab-example" className="mb-3">
 
   <Tab eventKey="home" title="Boggle">
     <Card className="text-center">

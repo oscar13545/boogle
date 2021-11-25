@@ -311,9 +311,9 @@ class OnePlayer extends React.Component {
 
 handleSubmit1() {
   this.state.MaxHeap.add(this.state.puntaje);
-  this.state.MaxHeap.add(300);
-  this.state.MaxHeap.add(500);
-  this.state.MaxHeap.add(700);
+  this.state.MaxHeap.add(800);
+  this.state.MaxHeap.add(1000);
+  this.state.MaxHeap.add(1500);
   var primerlugar = this.state.MaxHeap.extractMax();
   var segundolugar = this.state.MaxHeap.extractMax();
   var tercerlugar = this.state.MaxHeap.extractMax();

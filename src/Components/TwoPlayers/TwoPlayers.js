@@ -433,13 +433,17 @@ checkWord2 (board = [], guess = '',Hash = []) {
 handleSubmit1() {
   this.state.MaxHeap.add(this.state.puntaje1);
   this.state.MaxHeap.add(this.state.puntaje2);
-  this.state.MaxHeap.add(300);
-  this.state.MaxHeap.add(500);
-  this.state.MaxHeap.add(700);
+  
   var primerlugar = this.state.MaxHeap.extractMax();
   var segundolugar = this.state.MaxHeap.extractMax();
-  var tercerlugar = this.state.MaxHeap.extractMax();
-  alert('El resultado numero 1: ' + primerlugar + '\nEl resultado numero 2: '+ segundolugar + '\nEl resultado numero 3: '+ tercerlugar+ '\n\nEl resultado '+this.state.Equipo1+' fue: '+ this.state.puntaje1+'\nEl resultado '+this.state.Equipo2+' fue: '+ this.state.puntaje2);
+  if(primerlugar === segundolugar){
+    alert('Fue un empate entre el '+this.state.Equipo1+' y el ' + this.state.Equipo2 +' con un puntaje de: '+primerlugar)
+  }else{
+    if(primerlugar === this.state.puntaje1){
+        alert('El Ganador es el equipo '+this.state.Equipo1+' con un puntaje de ' + primerlugar + '\nEl Perdedor es el equipo '+this.state.Equipo2+' con un puntaje de ' + segundolugar);
+      }else{
+      alert('El Ganador es el equipo '+this.state.Equipo2+' con un puntaje de ' + primerlugar + '\nEl Perdedor es el equipo '+this.state.Equipo1+' con un puntaje de ' + segundolugar);
+    }}
 }
 
 
@@ -450,7 +454,7 @@ render() {
 
         <div class="Information">
         <Card>
-        <Card.Header><h4>Inserte en nombre de los equipos</h4></Card.Header>
+        <Card.Header><h4>Inserte el nombre de los equipos</h4></Card.Header>
         <br/>
              Equipo 1:
         <Form> <Form.Group className="mb-3" controlId="formBasicEmail">

@@ -455,16 +455,19 @@ render() {
              Equipo 1:
         <Form> <Form.Group className="mb-3" controlId="formBasicEmail">
             
-        <Form.Control type="text" style={{width: '500px'}}  value={this.state.Equipo1} onChange={this.handleChangeEq1.bind(this)} />
+        <Form.Control type="text"   value={this.state.Equipo1} onChange={this.handleChangeEq1.bind(this)} />
         </Form.Group></Form>
         <br/>
              Equipo 2:
         <Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Control type="text" style={{width: '500px'}}  value={this.state.Equipo2} onChange={this.handleChangeEq2.bind(this)} />
+        <Form.Control type="text" value={this.state.Equipo2} onChange={this.handleChangeEq2.bind(this)} />
         </Form.Group></Form>
+        
         </Card>
-        <div class="Information">
+
+       
+
         <Card className="text-center">
   <Card.Header>Turno de {this.state.Jugando}</Card.Header>
   <Card.Body>
@@ -544,7 +547,7 @@ render() {
 <Button variant="warning" onClick={this.handleSubmit1.bind(this)} href="/Home">Terminar</Button>
 
 
-</div>
+
 
 </div>
         
